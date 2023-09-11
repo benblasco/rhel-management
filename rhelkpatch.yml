@@ -1,0 +1,58 @@
+---
+- name: Ready host for kpatch, check for kpatch, and install if applicable
+
+  hosts: all
+  gather_facts: yes
+  become: yes
+
+  vars:
+    ansible_user: bblasco
+    # replace a kernel number that looks like "6.4.13-200.fc38.x86_64" with "6_4_13-200.fc38.x86_64"
+    kernel_version: "{{ ansible_kernel | regex_replace('\\.', '_')}}"
+    kernel_version_short: "{{ kernel_version | regex_replace('_[a-z].*', '')}}"
+
+  tasks:
+
+    - name: Ensure kpatch is installed
+      dnf:
+        name: kpatch
+        state: present
+
+    - name: Print the kernel version
+      debug:
+        msg:
+          - "Running kernel:"
+          - "{{ ansible_kernel }}"
+          - "{{ kernel_version }}"
+          - "{{ kernel_version_short }}"
+      tags:
+        - debug
+
+    - name: Check for applicable kpatches
+      dnf:
+        list: "kpatch-patch-{{ kernel_version_short }}"
+      register:
+        kpatch_list
+
+    # For some reason the task below prints many more kpatches than what are actually applicable
+    # and also prints more kpatches than if you run the following commands on the CLI. 
+    # This is because the task above uses functionality in the dnf module that isn't really 
+    # well documented/supported
+    # dnf list available kpatch-patch-5_14_0-70_13_1
+    # dnf list kpatch-patch-5_14_0-70_13_1
+    # Therefore the output should be ignored
+    - name: Print the kpatch list
+      debug:
+        msg:
+          - "Applicable kpatches:"
+          - "{{ kpatch_list }}"
+
+    - name: Install the kpatch if available
+      dnf:
+        name: "kpatch-patch-{{ kernel_version_short }}"
+        state: present
+      when:
+        - kpatch_list is defined
+      tags:
+        - install
+...
