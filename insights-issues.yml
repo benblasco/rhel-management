@@ -50,6 +50,8 @@
           - postgresql
           - postgresql-server
           - tuned-profiles-postgresql
+          # Language packs required else postgresql won't start with "error: invalid locale settings"
+          - glibc-all-langpacks
         state: present
       tags:
         - postgresql
