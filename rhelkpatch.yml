@@ -50,9 +50,9 @@
       debug:
         msg:
           - "Loaded/installed kpatches:"
-          - "{{ kpatch_list_installed }}"
+          - "{{ kpatch_list_installed.stdout_lines }}"
           - "Applicable kpatches:"
-          - "{{ kpatch_list_applicable }}"
+          - "{{ kpatch_list_applicable.stdout_lines }}"
 
     - name: Install the kpatch if available
       dnf:
@@ -83,6 +83,6 @@
       debug:
         msg:
           - "Loaded/installed kpatches:"
-          - "{{ kpatch_list_installed }}"
+          - "{{ kpatch_list_installed.stdout_lines }}"
 
 ...
