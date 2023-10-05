@@ -23,8 +23,8 @@
         msg:
           - "Running kernel:"
           - "{{ ansible_kernel }}"
-          - "{{ kernel_version }}"
-          - "{{ kernel_version_short }}"
+          #- "{{ kernel_version }}"
+          #- "{{ kernel_version_short }}"
       tags:
         - debug
 
@@ -55,4 +55,14 @@
         - kpatch_list is defined
       tags:
         - install
+
+    - name: Print the kernel version
+      debug:
+        msg:
+          - "Running kernel:"
+          - "{{ ansible_kernel }}"
+          #- "{{ kernel_version }}"
+          #- "{{ kernel_version_short }}"
+      tags:
+        - debug
 ...
