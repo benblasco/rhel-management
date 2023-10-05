@@ -6,7 +6,6 @@
   become: yes
 
   vars:
-    ansible_user: bblasco
     # replace a kernel number that looks like "6.4.13-200.fc38.x86_64" with "6_4_13-200.fc38.x86_64"
     kernel_version: "{{ ansible_kernel | regex_replace('\\.', '_')}}"
     kernel_version_short: "{{ kernel_version | regex_replace('_[a-z].*', '')}}"
@@ -28,11 +27,17 @@
       tags:
         - debug
 
+    - name: List current kpatches (pre-install)
+      shell:
+        cmd: kpatch list
+      register:
+        kpatch_list_installed
+
     - name: Check for applicable kpatches
       dnf:
         list: "kpatch-patch-{{ kernel_version_short }}"
       register:
-        kpatch_list
+        kpatch_list_applicable
 
     # For some reason the task below prints many more kpatches than what are actually applicable
     # and also prints more kpatches than if you run the following commands on the CLI. 
@@ -41,11 +46,13 @@
     # dnf list available kpatch-patch-5_14_0-70_13_1
     # dnf list kpatch-patch-5_14_0-70_13_1
     # Therefore the output should be ignored
-    - name: Print the kpatch list
+    - name: Print the kpatch list (pre-install)
       debug:
         msg:
+          - "Loaded/installed kpatches:"
+          - "{{ kpatch_list_installed }}"
           - "Applicable kpatches:"
-          - "{{ kpatch_list }}"
+          - "{{ kpatch_list_applicable }}"
 
     - name: Install the kpatch if available
       dnf:
@@ -65,4 +72,17 @@
           #- "{{ kernel_version_short }}"
       tags:
         - debug
+
+    - name: List current kpatches (post-install)
+      shell:
+        cmd: kpatch list
+      register:
+        kpatch_list_installed
+
+    - name: Print the kpatch list (post-install)
+      debug:
+        msg:
+          - "Loaded/installed kpatches:"
+          - "{{ kpatch_list_installed }}"
+
 ...
