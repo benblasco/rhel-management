@@ -1,12 +1,12 @@
 # Pre-requisite: ansible-galaxy collection install community.libvirt
-# ansible-playbook rhelconfigure.yml --vault-password-file secret.txt 
+# ansible-playbook rhelconfigure.yml --vault-password-file secret.txt
 #
 - name: Register RHEL VMs and install Insights/related
 
   hosts: "{{ vm_fqdn | default('none') }}"
 
-  gather_facts: yes
-  become: yes
+  gather_facts: true
+  become: true
 
   vars_files:
     - vars/rhn_credential.yml
@@ -24,7 +24,7 @@
   pre_tasks:
 
     - name: Set the system hostname correctly
-      hostname:
+      ansible.builtin.hostname:
         name: "{{ inventory_hostname }}"
         use: systemd
       tags:
@@ -44,13 +44,13 @@
   tasks:
 
     - name: Run the RHC role
-      include_role:
+      ansible.builtin.include_role:
         name: fedora.linux_system_roles.rhc
       tags:
         - rhc
 
     - name: Install some useful packages
-      yum:
+      ansible.builtin.yum:
         name:
           - bash-completion
           - vim
@@ -61,18 +61,18 @@
   post_tasks:
 
     - name: Show the RHEL version and scap-security-guide-version
-      debug:
-        msg: RHEL version {{ rhel_version }} requires {{ scap_security_guide_package[ rhel_version ] }}
+      ansible.builtin.debug:
+        msg: RHEL version {{ rhel_version }} requires {{ scap_security_guide_package[rhel_version] }}
       tags:
-      - insights
-      - debug
+        - insights
+        - debug
 
     - name: Install specific scap-security-guide package
-      yum:
+      ansible.builtin.yum:
         name:
           # Note that this exact format is needed to dereference rhel_version variable
           # Cannot use scap_security_guide_package.rhel_version notation
-          - "{{ scap_security_guide_package[ rhel_version ] }}"
+          - "{{ scap_security_guide_package[rhel_version] }}"
           - openscap
           - openscap-scanner
         state: present
