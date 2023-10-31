@@ -3,7 +3,7 @@
 #
 - name: Register RHEL VMs and install Insights/related
 
-  hosts: "{{ vm_fqdn | default('none') }}"
+  hosts: "{{ vm_fqdn | default("all") }}"
 
   gather_facts: true
   become: true
