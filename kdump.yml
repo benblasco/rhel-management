@@ -1,0 +1,13 @@
+---
+- hosts: all
+
+  name: Configure Kdump on a RHEL host
+  gather_facts: true
+  become: true
+
+  vars:
+    kdump_path: /var/crash
+    kdump_reboot_ok: true
+
+  roles:
+    - fedora.linux_system_roles.kdump
