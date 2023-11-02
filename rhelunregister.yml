@@ -14,5 +14,13 @@
 
     rhc_state: absent
 
+
+  pre_tasks:
+
+    - name: End the play if this isn't a RHEL host
+      ansible.builtin.meta: end_host
+      when:
+        - ansible_distribution != 'RedHat'
+
   roles:
     - role: fedora.linux_system_roles.rhc
