@@ -23,6 +23,20 @@
 
   pre_tasks:
 
+    - name: Show the RHEL version
+      ansible.builtin.debug:
+        msg: RHEL version {{ rhel_version }}
+      tags:
+        - insights
+        - debug
+
+    - name: Show the RHEL version and scap-security-guide-version
+      ansible.builtin.debug:
+        msg: RHEL version {{ rhel_version }} requires {{ scap_security_guide_package[rhel_version] }}
+      tags:
+        - insights
+        - debug
+
     - name: Set the system hostname correctly
       ansible.builtin.hostname:
         name: "{{ inventory_hostname }}"
@@ -59,6 +73,13 @@
         state: present
 
   post_tasks:
+
+    - name: Show the RHEL version
+      ansible.builtin.debug:
+        msg: RHEL version {{ rhel_version }}
+      tags:
+        - insights
+        - debug
 
     - name: Show the RHEL version and scap-security-guide-version
       ansible.builtin.debug:
