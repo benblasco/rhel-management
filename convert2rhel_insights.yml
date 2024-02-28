@@ -1,0 +1,110 @@
+# Pre-requisite: ansible-galaxy collection install community.libvirt
+# ansible-playbook rhelconfigure.yml --vault-password-file secret.txt
+#
+- name: Register CentOS VMs and install Insights/related before convert2rhel
+
+  hosts: "{{ vm_fqdn | default('centos') }}"
+
+  gather_facts: true
+  become: true
+
+  vars_files:
+    - vars/rhn_credential.yml
+    #- vars/ssg_versions.yml
+    - vars/rhc_configuration.yml
+
+  vars:
+  # Explicitly telling Ansible to use Python3, because of the bug below:
+  #     # https://github.com/ansible/ansible/issues/54855
+  #- ansible_python_interpreter: /usr/bin/python3
+
+    rhel_version: "{{ ansible_facts['distribution_version'] }}"
+      #rhel_version: "{{ ansible_facts['distribution_major_version'] }}"
+
+  pre_tasks:
+
+    - name: Show the CentOS version
+      ansible.builtin.debug:
+        msg: CentOS version {{ rhel_version }}
+      tags:
+        - insights
+        - debug
+
+    - name: Set the system hostname correctly
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}"
+        use: systemd
+      tags:
+        - hostname
+
+    - name: Set the system timezone correctly
+      community.general.timezone:
+        name: Australia/Melbourne
+      tags:
+        - timezone
+
+    - name: End the play if this isn't a CentOS host
+      ansible.builtin.meta: end_host
+      when:
+        - ansible_distribution != 'CentOS'
+
+  tasks:
+
+    - name: Update all packages
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+      register: yum_result
+
+    - name: Show the CentOS version
+      ansible.builtin.debug:
+        var: yum_result
+      tags:
+        - debug
+
+    - name: Reboot the machine if packages were updated
+      ansible.builtin.reboot:
+      when: yum_result.changed is true
+      tags:
+        - reboot
+
+    - name: Enable RHEL 7 Server client tools repo
+      uri:
+        url: 'https://ftp.redhat.com/redhat/client-tools/client-tools-for-rhel-7-server.repo'
+        method: GET
+        dest: /etc/yum.repos.d/client-tools-for-rhel-7-server.repo
+        status_code:
+          - 200
+          - 304
+      register: result
+
+    - name: Get the RHEL 7 GPG key
+      uri:
+        url: 'https://www.redhat.com/security/data/fd431d51.txt'
+        method: GET
+        dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+        status_code:
+          - 200
+          - 304
+      register: result
+
+    - name: Install subscription management-related packages
+      ansible.builtin.yum:
+        name:
+          - subscription-manager
+          - insights-client
+          - rhc
+          - rhc-worker-script
+        state: latest
+
+    - name: Run the RHC command
+      ansible.builtin.shell:
+        cmd: rhc connect --organization {{ organization_id }} --activation-key {{ activation_key }}
+      tags:
+        - rhc
+
+    #- name: Run the RHC role
+      #ansible.builtin.include_role:
+        #name: fedora.linux_system_roles.rhc
+      #tags:
+        #- rhc
