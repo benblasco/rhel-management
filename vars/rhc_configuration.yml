@@ -9,6 +9,7 @@ rhc_insights:
   state: present
   autoupdate: true
   remediation: present
+  group: bblasco
   tags:
     environment: dev
     location: #"au/vic/melbourne"
