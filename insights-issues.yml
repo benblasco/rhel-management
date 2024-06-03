@@ -107,8 +107,21 @@
       tags:
         - ssh
 
+    # D-Bus service will fail to restart when the /etc/machine-id file does not exist or with invalid permissions
+    # https://console.redhat.com/preview/insights/advisor/recommendations/dbus_failed_due_to_machine_id|MACHINE_ID_IS_MISSING_OR_WITH_INVALID_PERMISSION_WARN
+    - name: Delete /etc/machine-id
+      ansible.builtin.file:
+        path: /etc/machine-id
+        state: absent
+        #mode: a+w
+        #modification_time: preserve
+        #access_time: preserve
+      tags:
+        - dbus
+
     - name: Run the Insights Client
       command: insights-client
       tags:
         - insights
+
 
