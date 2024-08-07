@@ -2,7 +2,7 @@ cockpit_enabled: true
 
 cockpit_started: true
 
-cockpit_manage_firewall: false
+cockpit_manage_firewall: true
 
 cockpit_packages: full
 

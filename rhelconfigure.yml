@@ -14,6 +14,7 @@
     - vars/rhc_configuration.yml
     - vars/timesync.yml
     - vars/cockpit.yml
+    - vars/metrics.yml
 
   vars:
   # Explicitly telling Ansible to use Python3, because of the bug below:
@@ -76,6 +77,13 @@
         name: fedora.linux_system_roles.cockpit
       tags:
         - cockpit
+
+    - name: Run the Metrics (PCP) role
+      ansible.builtin.include_role:
+        name: fedora.linux_system_roles.metrics
+      tags:
+        - metrics
+        - never
 
     - name: Install some useful packages
       ansible.builtin.yum:
