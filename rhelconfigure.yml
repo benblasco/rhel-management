@@ -12,6 +12,8 @@
     - vars/rhn_credential.yml
     - vars/ssg_versions.yml
     - vars/rhc_configuration.yml
+    - vars/timesync.yml
+    - vars/cockpit.yml
 
   vars:
   # Explicitly telling Ansible to use Python3, because of the bug below:
@@ -46,9 +48,9 @@
 
     - name: Set the system timezone correctly
       community.general.timezone:
-        name: Australia/Melbourne
+        name: "{{ timezone }}"
       tags:
-        - timezone
+        - timesync
 
     - name: End the play if this isn't a RHEL host
       ansible.builtin.meta: end_host
@@ -62,6 +64,12 @@
         name: fedora.linux_system_roles.rhc
       tags:
         - rhc
+
+    - name: Run the Timesync role
+      ansible.builtin.include_role:
+        name: fedora.linux_system_roles.timesync
+      tags:
+        - timesync
 
     - name: Run the Cockpit role
       ansible.builtin.include_role:
