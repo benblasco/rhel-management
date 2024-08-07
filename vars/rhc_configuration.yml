@@ -12,7 +12,7 @@ rhc_insights:
   group: bblasco
   tags:
     environment: dev
-    location: #"au/vic/melbourne"
+    location: # "au/vic/melbourne"
       country: au
       state: vic
       city: melbourne
