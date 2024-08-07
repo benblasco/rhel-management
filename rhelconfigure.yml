@@ -63,6 +63,12 @@
       tags:
         - rhc
 
+    - name: Run the Cockpit role
+      ansible.builtin.include_role:
+        name: fedora.linux_system_roles.cockpit
+      tags:
+        - cockpit
+
     - name: Install some useful packages
       ansible.builtin.yum:
         name:
