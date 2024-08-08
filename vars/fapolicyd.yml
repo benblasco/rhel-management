@@ -1,0 +1,2 @@
+    fapolicyd_setup_enable_service: false
+    fapolicyd_setup_integrity: sha256
