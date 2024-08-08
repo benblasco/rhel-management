@@ -1,0 +1,15 @@
+# ANSIBLE MANAGED
+# More knowledge at https://opensource.com/article/20/7/systemd-timers
+[Unit]
+Description=Run Insights Compliance scan daily
+Requires=insights-compliance.service
+
+[Timer]
+Unit=insights-compliance.service
+OnCalendar=Mon..Fri 02:00:00
+#AccuracySec=6h
+RandomizedDelaySec=2h
+Persistent=true
+
+[Install]
+WantedBy=timers.target
