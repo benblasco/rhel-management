@@ -1,0 +1,12 @@
+# ANSIBLE MANAGED
+# More knowledge at https://opensource.com/article/20/7/systemd-timers
+[Unit]
+Description=Insights Compliance Service
+After=network.target network-online.target
+#Requisite=network.target network-online.target
+Wants=insights-compliance.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/insights-client --compliance
+StandardOutput=null
