@@ -15,6 +15,7 @@
     - vars/timesync.yml
     - vars/cockpit.yml
     - vars/metrics.yml
+    - vars/fapolicyd.yml
 
   vars:
   # Explicitly telling Ansible to use Python3, because of the bug below:
@@ -84,6 +85,12 @@
       tags:
         - metrics
         - never
+
+    - name: Run the Fapolicyd role
+      ansible.builtin.include_role:
+        name: fedora.linux_system_roles.fapolicyd
+      tags:
+        - fapolicyd
 
     - name: Install some useful packages
       ansible.builtin.yum:
