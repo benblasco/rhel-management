@@ -6,7 +6,8 @@ Requires=insights-compliance.service
 
 [Timer]
 Unit=insights-compliance.service
-OnCalendar=Mon..Fri 02:00:00
+#OnCalendar=Mon..Fri 02:00:00
+OnCalendar=Mon,Tue,Wed,Thu,Fri 02:00:00
 #AccuracySec=6h
 RandomizedDelaySec=2h
 Persistent=true
