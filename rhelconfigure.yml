@@ -87,9 +87,12 @@
         - metrics
         - never
 
-    - name: Run the Fapolicyd role
+    - name: Run the Fapolicyd role (RHEL 8+ only)
       ansible.builtin.include_role:
         name: fedora.linux_system_roles.fapolicyd
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_distribution_major_version|int >= 8
       tags:
         - fapolicyd
 
