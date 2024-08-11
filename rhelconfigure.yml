@@ -16,6 +16,7 @@
     - vars/cockpit.yml
     - vars/metrics.yml
     - vars/fapolicyd.yml
+    - vars/tlog.yml
     - vars/systemd.yml
 
   vars:
@@ -95,6 +96,15 @@
         - ansible_distribution_major_version|int >= 8
       tags:
         - fapolicyd
+
+    - name: Run the Tlog role (RHEL 8+ only)
+      ansible.builtin.include_role:
+        name: fedora.linux_system_roles.tlog
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_distribution_major_version|int >= 8
+      tags:
+        - tlog
 
     - name: Run the Systemd role
       ansible.builtin.include_role:
