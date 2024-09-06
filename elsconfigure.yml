@@ -1,0 +1,126 @@
+# Pre-requisite: ansible-galaxy collection install community.libvirt
+# ansible-playbook rhelconfigure.yml --vault-password-file secret.txt
+#
+- name: Register RHEL VMs and install Insights/related
+
+  hosts: awsels
+
+  gather_facts: true
+  become: true
+
+  vars_files:
+    - vars/els_credential.yml
+    - vars/rhc_configuration.yml
+    - vars/timesync.yml
+
+  vars:
+  # Explicitly telling Ansible to use Python3, because of the bug below:
+  #     # https://github.com/ansible/ansible/issues/54855
+  #- ansible_python_interpreter: /usr/bin/python3
+
+    rhel_version: "{{ ansible_facts['distribution_version'] }}"
+      #rhel_version: "{{ ansible_facts['distribution_major_version'] }}"
+      #
+
+    rhc_repositories:
+      - {name: "rhel-7-server-els-rpms", state: enabled}
+
+  pre_tasks:
+
+    - name: Show the RHEL version
+      ansible.builtin.debug:
+        msg: RHEL version {{ rhel_version }}
+      tags:
+        - insights
+        - debug
+
+    - name: Set the system hostname correctly
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}"
+        use: systemd
+      tags:
+        - hostname
+
+    - name: Set the system timezone correctly
+      community.general.timezone:
+        name: "{{ timezone }}"
+      tags:
+        - timesync
+
+    - name: End the play if this isn't a RHEL host
+      ansible.builtin.meta: end_host
+      when:
+        - ansible_distribution != 'RedHat'
+
+    - name: Create the directory for the ELS certificate
+      file: 
+        path: /etc/pki/product
+        state: directory
+        recurse: true
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Apply the SELinux file context to the directory
+      ansible.builtin.command: restorecon -Rv /etc/pki/product
+
+    - name: Copy the 204.pem certificate file to the system
+      copy:
+        src: files/204.pem
+        dest: /etc/pki/product/204.pem
+        owner: root
+        group: root
+        mode: '0644'
+
+    #- name: Run subcription-manager refresh
+      #ansible.builtin.command: subscription-manager refresh
+
+    - name: Install host-metering package
+      ansible.builtin.yum:
+        name: host-metering
+        state: present
+      tags:
+        - metering
+        - yum
+
+    - name: Enable host-metering service
+      ansible.builtin.service:
+        name: host-metering.service
+        state: restarted
+        enabled: true
+      tags:
+        - metering
+
+  tasks:
+
+    - name: Ensure subscription-manager can manage repos
+      lineinfile:
+        path: /etc/rhsm/rhsm.conf
+        regexp: ^manage_repos
+        line: "manage_repos = 1"
+
+    - name: Run the RHC role
+      ansible.builtin.include_role:
+        name: fedora.linux_system_roles.rhc
+      tags:
+        - rhc
+
+    - name: Update all packages
+      ansible.builtin.yum:
+        name: "*"
+        state: latest
+      tags:
+        - yum
+
+    - name: Install some useful packages
+      ansible.builtin.yum:
+        name:
+          - bash-completion
+          - vim
+          - tmux
+          - git
+          - tree
+        state: present
+      tags:
+        - yum
+
