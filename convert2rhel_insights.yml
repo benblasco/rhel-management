@@ -10,8 +10,6 @@
 
   vars_files:
     - vars/rhn_credential.yml
-    #- vars/ssg_versions.yml
-    - vars/rhc_configuration.yml
 
   vars:
   # Explicitly telling Ansible to use Python3, because of the bug below:

@@ -1,0 +1,7 @@
+systemd_unit_files:
+  - insights-compliance.service
+  - insights-compliance.timer
+systemd_started_units:
+  - insights-compliance.timer
+systemd_enabled_units:
+  - insights-compliance.timer

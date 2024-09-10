@@ -11,13 +11,6 @@
   vars_files:
     - vars/rhn_credential.yml
     - vars/ssg_versions.yml
-    - vars/rhc_configuration.yml
-    - vars/timesync.yml
-    - vars/cockpit.yml
-    - vars/metrics.yml
-    - vars/fapolicyd.yml
-    - vars/tlog.yml
-    - vars/systemd.yml
 
   vars:
   # Explicitly telling Ansible to use Python3, because of the bug below:
