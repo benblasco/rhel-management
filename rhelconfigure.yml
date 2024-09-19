@@ -22,16 +22,9 @@
 
   pre_tasks:
 
-    - name: Show the RHEL version
+    - name: Show the Distribution version
       ansible.builtin.debug:
-        msg: RHEL version {{ rhel_version }}
-      tags:
-        - insights
-        - debug
-
-    - name: Show the RHEL version and scap-security-guide-version
-      ansible.builtin.debug:
-        msg: RHEL version {{ rhel_version }} requires {{ scap_security_guide_package[rhel_version] }}
+        msg: Distribution version {{ rhel_version }}
       tags:
         - insights
         - debug
@@ -53,6 +46,13 @@
       ansible.builtin.meta: end_host
       when:
         - ansible_distribution != 'RedHat'
+
+    - name: Show the RHEL version and scap-security-guide-version
+      ansible.builtin.debug:
+        msg: RHEL version {{ rhel_version }} requires {{ scap_security_guide_package[rhel_version] }}
+      tags:
+        - insights
+        - debug
 
   tasks:
 
