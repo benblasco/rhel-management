@@ -1,9 +1,13 @@
 # Pre-requisite: ansible-galaxy collection install community.libvirt
 #
-- hosts: all
+- name: Disconnect Insights and Unregister RHEL VMs
+
+  hosts: all
+
   become: true
 
-  name: Disconnect Insights and Unregister RHEL VMs
+  vars_files:
+    - vars/rhn_credential.yml
 
   vars:
   # Explicitly telling Ansible to use Python3, because of the bug below:
