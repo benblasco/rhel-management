@@ -29,26 +29,11 @@
       name: rhsmcertd
       state: restarted
 
-  - name: Install some useful packages
-    dnf:
-      name: "{{ item }}"
-      state: present
-    loop:
-      - bash-completion
-      - vim
-      - tmux
-      #- rhui-azure-rhel8-ansible
-      #- ansible
-      - rhc
-      - rhc-worker-playbook
+  - name: Grab some subscription-manager facts for debugging
+    ansible.builtin.shell:
+      cmd: 'subscription-manager facts | grep -i azure'
+    register: subman_facts
 
-  - name: Install Insights-related packages
-    yum:
-      name: "{{ item }}"
-      state: present
-    loop:
-      - insights-client
-      - scap-security-guide
-      - openscap-scanner
-    tags:
-      - insights
+  - name: Print the subscription-manager facts for debugging
+    ansible.builtin.debug:
+      var: subman_facts
