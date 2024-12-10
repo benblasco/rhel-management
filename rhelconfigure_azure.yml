@@ -12,6 +12,13 @@
 
   tasks:
 
+  - name: Set the system hostname correctly
+    ansible.builtin.hostname:
+      name: "{{ inventory_hostname }}"
+      use: systemd
+    tags:
+      - hostname
+
   - name: Install some useful packages
     dnf:
       name: "{{ item }}"
