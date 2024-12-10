@@ -31,9 +31,26 @@
 
   - name: Grab some subscription-manager facts for debugging
     ansible.builtin.shell:
-      cmd: 'subscription-manager facts | grep -i azure'
+      cmd: 'subscription-manager facts | grep -i "^azure"'
     register: subman_facts
+    tags:
+      - subman
 
   - name: Print the subscription-manager facts for debugging
     ansible.builtin.debug:
-      var: subman_facts
+      var: subman_facts.stdout_lines
+    tags:
+      - subman
+
+  - name: Find out which repositories are in use
+    ansible.builtin.shell:
+      cmd: 'dnf repolist'
+    register: repos
+    tags:
+      - repos
+
+  - name: Print the repository list for debugging
+    ansible.builtin.debug:
+      var: repos.stdout_lines
+    tags:
+      - repos
