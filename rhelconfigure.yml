@@ -62,6 +62,17 @@
       tags:
         - rhc
 
+    # Fix from Insights rule here:
+    # https://console.redhat.com/insights/advisor/recommendations/rhc_lose_conn_to_console|RHC_MQTT_DELAY_WARN#SIDs=&tags=
+    - name: Add the mqtt-reconnect-delay = "10s" line to the /etc/rhc/config.toml
+      ansible.builtin.lineinfile:
+        path: /etc/rhc/config.toml
+        regexp: '^mqtt-reconnect-delay'
+        line: '^mqtt-reconnect-delay = "10s"'
+        backup: true
+      tags:
+        - rhc
+
     - name: Run the Timesync role
       ansible.builtin.include_role:
         name: fedora.linux_system_roles.timesync
