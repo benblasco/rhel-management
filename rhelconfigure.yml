@@ -62,6 +62,13 @@
       tags:
         - rhc
 
+    - name: Check if RHC /etc/rhc/config.toml exists
+      stat:
+        path: "/etc/rhc/config.toml"
+      register: configtoml
+      tags:
+        - rhc
+
     # Fix from Insights rule here:
     # https://console.redhat.com/insights/advisor/recommendations/rhc_lose_conn_to_console|RHC_MQTT_DELAY_WARN#SIDs=&tags=
     - name: Add the mqtt-reconnect-delay = "10s" line to the /etc/rhc/config.toml
@@ -70,6 +77,7 @@
         regexp: '^mqtt-reconnect-delay'
         line: '^mqtt-reconnect-delay = "10s"'
         backup: true
+      when: configtoml.stat.exists
       tags:
         - rhc
 
