@@ -1,2 +1,2 @@
-tlog_use_sssd: false
-tlog_scope_sssd: none
+tlog_use_sssd: true
+tlog_scope_sssd: all
