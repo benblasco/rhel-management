@@ -22,16 +22,9 @@
 
   pre_tasks:
 
-    - name: Show the RHEL version
+    - name: Show the Distribution version
       ansible.builtin.debug:
-        msg: RHEL version {{ rhel_version }}
-      tags:
-        - insights
-        - debug
-
-    - name: Show the RHEL version and scap-security-guide-version
-      ansible.builtin.debug:
-        msg: RHEL version {{ rhel_version }} requires {{ scap_security_guide_package[rhel_version] }}
+        msg: Distribution version {{ rhel_version }}
       tags:
         - insights
         - debug
@@ -54,11 +47,37 @@
       when:
         - ansible_distribution != 'RedHat'
 
+    - name: Show the RHEL version and scap-security-guide-version
+      ansible.builtin.debug:
+        msg: RHEL version {{ rhel_version }} requires {{ scap_security_guide_package[rhel_version] }}
+      tags:
+        - insights
+        - debug
+
   tasks:
 
     - name: Run the RHC role
       ansible.builtin.include_role:
         name: fedora.linux_system_roles.rhc
+      tags:
+        - rhc
+
+    - name: Check if RHC /etc/rhc/config.toml exists
+      stat:
+        path: "/etc/rhc/config.toml"
+      register: configtoml
+      tags:
+        - rhc
+
+    # Fix from Insights rule here:
+    # https://console.redhat.com/insights/advisor/recommendations/rhc_lose_conn_to_console|RHC_MQTT_DELAY_WARN#SIDs=&tags=
+    - name: Add the mqtt-reconnect-delay = "10s" line to the /etc/rhc/config.toml
+      ansible.builtin.lineinfile:
+        path: /etc/rhc/config.toml
+        regexp: '^mqtt-reconnect-delay'
+        line: '^mqtt-reconnect-delay = "10s"'
+        backup: true
+      when: configtoml.stat.exists
       tags:
         - rhc
 
@@ -89,6 +108,7 @@
         - ansible_distribution_major_version|int >= 8
       tags:
         - fapolicyd
+        - never # Because it makes the system too slow
 
     - name: Run the Tlog role (RHEL 8+ only)
       ansible.builtin.include_role:

@@ -3,7 +3,7 @@
 #
 - name: Register RHEL VMs and install Insights/related
 
-  hosts: awsels
+  hosts: azureels
 
   gather_facts: true
   become: true
@@ -61,14 +61,6 @@
 
     - name: Apply the SELinux file context to the directory
       ansible.builtin.command: restorecon -Rv /etc/pki/product
-
-    - name: Copy the 204.pem certificate file to the system
-      copy:
-        src: files/204.pem
-        dest: /etc/pki/product/204.pem
-        owner: root
-        group: root
-        mode: '0644'
 
     #- name: Run subcription-manager refresh
       #ansible.builtin.command: subscription-manager refresh

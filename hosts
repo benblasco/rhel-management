@@ -1,16 +1,42 @@
 [rhelvm]
+#rhel92.nuc.blasco.id.au ansible_host=192.168.3.125
+rhel90.opti.blasco.id.au ansible_host=192.168.6.133
 
 [rhelrhc]
 #rhel85.blasco.id.au ansible_host=192.168.6.115
 #rhel86.blasco.id.au ansible_host=192.168.6.181
-rhel86.opti.blasco.id.au ansible_host=192.168.7.113
 
 [aap]
-aap.opti.blasco.id.au ansible_host=192.168.7.134
+#aap.opti.blasco.id.au ansible_host=192.168.7.134
+#aapnew.opti.blasco.id.au ansible_host=192.168.7.127
+
+[awsels]
+bblasco-aws-rhel7els-payg1 ansible_host=13.54.215.153
+bblasco-aws-rhel7els-payg2 ansible_host=3.106.196.236
+bblasco-aws-rhel7els-payg3 ansible_host=52.63.253.163
+bblasco-aws-rhel7els-payg4 ansible_host=13.54.216.144
+bblasco-aws-rhel7els-payg5 ansible_host=3.106.246.89
+
+[azureels]
+bblasco-payg-els01 ansible_host=20.5.184.166
+
+[aws]
+bblasco-aws-rhel9-byos1 ansible_host=3.25.109.54
+bblasco-aws-rhel9-byos2 ansible_host=3.106.52.238
+bblasco-aws-rhel9-byos3 ansible_host=13.211.159.166
 
 [azure]
 #bblasco-azure-cis1 ansible_host=52.150.9.76
 #bblasco-azure-cis2 ansible_host=20.119.71.50
+bblasco-azure-rhel9-payg ansible_host=20.46.103.73
+bblasco-azure-rhel9-byos ansible_host=52.147.54.186
+bblasco-rhel9-azure-paygtobyos ansible_host=52.255.60.70
+bblasco-rhel9-azure-paygpacker ansible_host=13.70.186.198
+bblasco-rhel9-azure-byospacker ansible_host=52.158.153.227
+bblasco-rhel9-azure-byostopayg ansible_host=52.147.55.144
+
+#bblasco-azure-rhel9-byos-packer ansible_host=
+#bblasco-azure-rhel9-payg-packer ansible_host=40.127.90.182
 
 [all:vars]
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
@@ -20,5 +46,24 @@ ansible_user=bblasco
 ansible_user=azureuser
 ansible_ssh_private_key_file=/home/bblasco/Downloads/bblasco-composer-azure_key.pem
 
+[azureels:vars]
+ansible_user=azureuser
+
 [rhelvm:children]
 azure
+
+[centos]
+bblasco-centos-ok ansible_host=18.206.40.171
+bblasco-centos-kmod ansible_host=18.205.156.201
+
+[centos:vars]
+ansible_user=centos
+ansible_ssh_private_key_file=/home/bblasco/Downloads/bblasco-aws-20240226.pem
+
+[awsels:vars]
+ansible_user=ec2-user
+ansible_ssh_private_key_file=/home/bblasco/Downloads/bblasco-aws-20240819.pem
+
+[aws:vars]
+ansible_user=ec2-user
+ansible_ssh_private_key_file=/home/bblasco/Downloads/bblasco_aws_20240917.pem
