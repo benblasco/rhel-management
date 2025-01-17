@@ -75,7 +75,7 @@
       ansible.builtin.lineinfile:
         path: /etc/rhc/config.toml
         regexp: '^mqtt-reconnect-delay'
-        line: '^mqtt-reconnect-delay = "10s"'
+        line: 'mqtt-reconnect-delay = "10s"'
         backup: true
       when: configtoml.stat.exists
       tags:
