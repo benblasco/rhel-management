@@ -22,4 +22,6 @@ scap_security_guide_package:
   "9.4": "scap-security-guide-0.1.73-1.el9_4.noarch"
   "9.5": "scap-security-guide-0.1.75-1.el9.noarch"
   "9.6": "scap-security-guide-0.1.76-1.el9.noarch"
+  "9.7": "scap-security-guide-0.1.79-1.el9.noarch"
   "10.0": "scap-security-guide-0.1.76-2.el10.noarch"
+  "10.1": "scap-security-guide-0.1.79-2.el10.noarch"
