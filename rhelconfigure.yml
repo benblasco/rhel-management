@@ -135,6 +135,24 @@
           - tree
         state: present
 
+    - name: Enable the RHEL Extensions repository
+      community.general.rhsm_repository:
+        name: "rhel-{{ ansible_distribution_major_version }}-for-{{ ansible_architecture }}-extensions"
+        state: enabled
+      when:
+        - ansible_distribution_major_version | int >= 9
+      tags:
+        - extensions
+
+    - name: Install htop from the RHEL Extensions repository
+      ansible.builtin.dnf:
+        name: htop
+        state: present
+      when:
+        - ansible_distribution_major_version | int >= 9
+      tags:
+        - extensions
+
   post_tasks:
 
     - name: Show the RHEL version
