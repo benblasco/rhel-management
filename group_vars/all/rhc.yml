@@ -3,14 +3,14 @@ rhc_auth:
     keys:
       - "{{ activation_key }}"
 
-rhc_organization: "{{ organization_id }}"
+rhc_organization: "{{ organization_id | string }}"
 
 rhc_insights:
   state: present
   autoupdate: true
   remediation: present
-  group: bblasco
   tags:
+    group: bblasco
     environment: dev
     location: # "au/vic/melbourne"
       country: au
