@@ -12,12 +12,11 @@
     - vars/rhn_credential.yml
 
   vars:
-  # Explicitly telling Ansible to use Python3, because of the bug below:
-  #     # https://github.com/ansible/ansible/issues/54855
-  #- ansible_python_interpreter: /usr/bin/python3
-
+    # Explicitly telling Ansible to use Python3, because of the bug below:
+    #     https://github.com/ansible/ansible/issues/54855
+    # - ansible_python_interpreter: /usr/bin/python3
     rhel_version: "{{ ansible_facts['distribution_version'] }}"
-      #rhel_version: "{{ ansible_facts['distribution_major_version'] }}"
+    # rhel_version: "{{ ansible_facts['distribution_major_version'] }}"
 
   pre_tasks:
 
@@ -96,13 +95,15 @@
         state: latest
 
     - name: Run the RHC command
-      ansible.builtin.shell:
-        cmd: rhc connect --organization {{ organization_id }} --activation-key {{ activation_key }}
+      ansible.builtin.command:
+        cmd: >-
+          rhc connect --organization {{ organization_id }}
+          --activation-key {{ activation_key }}
       tags:
         - rhc
 
-    #- name: Run the RHC role
-      #ansible.builtin.include_role:
-        #name: fedora.linux_system_roles.rhc
-      #tags:
-        #- rhc
+    # - name: Run the RHC role
+    #   ansible.builtin.include_role:
+    #     name: fedora.linux_system_roles.rhc
+    #   tags:
+    #     - rhc

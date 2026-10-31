@@ -1,6 +1,7 @@
 [rhelvm]
 #rhel92.nuc.blasco.id.au ansible_host=192.168.3.125
-rhel90.opti.blasco.id.au ansible_host=192.168.6.133
+#rhel90.opti.blasco.id.au ansible_host=192.168.6.133
+cla-online.hex.blasco.id.au ansible_host=192.168.5.101
 
 [rhelrhc]
 #rhel85.blasco.id.au ansible_host=192.168.6.115
@@ -50,7 +51,7 @@ ansible_ssh_private_key_file=/home/bblasco/Downloads/bblasco-composer-azure_key.
 ansible_user=azureuser
 
 [rhelvm:children]
-azure
+#azure
 
 [centos]
 bblasco-centos-ok ansible_host=18.206.40.171

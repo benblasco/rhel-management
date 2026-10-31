@@ -12,13 +12,11 @@
     - vars/els_credential.yml
 
   vars:
-  # Explicitly telling Ansible to use Python3, because of the bug below:
-  #     # https://github.com/ansible/ansible/issues/54855
-  #- ansible_python_interpreter: /usr/bin/python3
-
+    # Explicitly telling Ansible to use Python3, because of the bug below:
+    #     https://github.com/ansible/ansible/issues/54855
+    # - ansible_python_interpreter: /usr/bin/python3
     rhel_version: "{{ ansible_facts['distribution_version'] }}"
-      #rhel_version: "{{ ansible_facts['distribution_major_version'] }}"
-      #
+    # rhel_version: "{{ ansible_facts['distribution_major_version'] }}"
 
     rhc_repositories:
       - {name: "rhel-7-server-els-rpms", state: enabled}
@@ -51,7 +49,7 @@
         - ansible_distribution != 'RedHat'
 
     - name: Create the directory for the ELS certificate
-      file: 
+      file:
         path: /etc/pki/product
         state: directory
         recurse: true
@@ -62,8 +60,8 @@
     - name: Apply the SELinux file context to the directory
       ansible.builtin.command: restorecon -Rv /etc/pki/product
 
-    #- name: Run subcription-manager refresh
-      #ansible.builtin.command: subscription-manager refresh
+    # - name: Run subcription-manager refresh
+    #   ansible.builtin.command: subscription-manager refresh
 
     - name: Install host-metering package
       ansible.builtin.yum:
@@ -113,4 +111,3 @@
         state: present
       tags:
         - yum
-

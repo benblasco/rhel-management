@@ -1,7 +1,6 @@
 ---
-- hosts: all
-
-  name: Configure Kdump on a RHEL host
+- name: Configure Kdump on a RHEL host
+  hosts: all
   gather_facts: true
   become: true
 

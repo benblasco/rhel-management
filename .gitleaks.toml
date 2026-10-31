@@ -1,0 +1,8 @@
+title = "rhel-management"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Retired playbooks and roles"
+paths = ['''(?i)^roles/archive/''']

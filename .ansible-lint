@@ -1,0 +1,13 @@
+---
+profile: moderate
+exclude_paths:
+  - roles/archive/
+  - hardening/
+  - .cache/
+  - .git/
+
+write_list:
+  - none
+
+warn_list:
+  - experimental

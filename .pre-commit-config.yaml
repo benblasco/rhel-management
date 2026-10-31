@@ -1,0 +1,57 @@
+# See README.md (Development). roles/archive/ is excluded from every hook.
+---
+exclude: ^roles/archive/
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^roles/archive/
+      - id: end-of-file-fixer
+        exclude: ^roles/archive/
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: ^roles/archive/|^hardening/|\.j2$
+      - id: check-merge-conflict
+        exclude: ^roles/archive/
+      - id: check-added-large-files
+        args: [--maxkb=500]
+        exclude: ^roles/archive/
+      - id: detect-private-key
+        exclude: ^roles/archive/
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        files: \.(yml|yaml)$
+        exclude: ^roles/archive/|^hardening/|\.j2$
+
+  - repo: local
+    hooks:
+      - id: ansible-lint
+        name: ansible-lint
+        entry: ansible-lint
+        language: system
+        pass_filenames: false
+        always_run: true
+        exclude: ^roles/archive/
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks
+        exclude: ^roles/archive/
+
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+        exclude: ^roles/archive/
+
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.17.2
+    hooks:
+      - id: markdownlint-cli2
+        exclude: ^roles/archive/

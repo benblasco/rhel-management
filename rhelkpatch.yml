@@ -2,8 +2,8 @@
 - name: Ready host for kpatch, check for kpatch, and install if applicable
 
   hosts: all
-  gather_facts: yes
-  become: yes
+  gather_facts: true
+  become: true
 
   vars:
     # replace a kernel number that looks like "6.4.13-200.fc38.x86_64" with "6_4_13-200.fc38.x86_64"
@@ -22,16 +22,16 @@
         msg:
           - "Running kernel:"
           - "{{ ansible_kernel }}"
-          #- "{{ kernel_version }}"
-          #- "{{ kernel_version_short }}"
+          # - "{{ kernel_version }}"
+          # - "{{ kernel_version_short }}"
       tags:
         - debug
 
     - name: List current kpatches (pre-install)
-      shell:
+      ansible.builtin.command:
         cmd: kpatch list
-      register:
-        kpatch_list_installed
+      register: kpatch_list_installed
+      changed_when: false
 
     - name: Check for applicable kpatches
       dnf:
@@ -40,8 +40,8 @@
         kpatch_list_applicable
 
     # For some reason the task below prints many more kpatches than what are actually applicable
-    # and also prints more kpatches than if you run the following commands on the CLI. 
-    # This is because the task above uses functionality in the dnf module that isn't really 
+    # and also prints more kpatches than if you run the following commands on the CLI.
+    # This is because the task above uses functionality in the dnf module that isn't really
     # well documented/supported
     # dnf list available kpatch-patch-5_14_0-70_13_1
     # dnf list kpatch-patch-5_14_0-70_13_1
@@ -68,16 +68,16 @@
         msg:
           - "Running kernel:"
           - "{{ ansible_kernel }}"
-          #- "{{ kernel_version }}"
-          #- "{{ kernel_version_short }}"
+          # - "{{ kernel_version }}"
+          # - "{{ kernel_version_short }}"
       tags:
         - debug
 
     - name: List current kpatches (post-install)
-      shell:
+      ansible.builtin.command:
         cmd: kpatch list
-      register:
-        kpatch_list_installed
+      register: kpatch_list_installed
+      changed_when: false
 
     - name: Print the kpatch list (post-install)
       debug:

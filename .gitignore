@@ -1,6 +1,9 @@
 # Secrets file for passwords etc.
 secret.txt
 
+# ansible-galaxy role installs (local)
+.ansible/
+
 # Ansible Builder Artifacts
 context/
 
